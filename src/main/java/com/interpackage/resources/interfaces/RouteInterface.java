@@ -1,4 +1,10 @@
 package com.interpackage.resources.interfaces;
 
-public interface ServiceInterface {
+import com.interpackage.resources.model.Response;
+import com.interpackage.resources.model.Route;
+import org.springframework.http.ResponseEntity;
+
+public interface RouteInterface {
+
+    ResponseEntity<Response> create(Route route);
 }
