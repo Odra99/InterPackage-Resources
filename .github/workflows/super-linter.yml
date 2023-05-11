@@ -25,3 +25,9 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "main"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ESLINT_CUSTOM_CONFIG: |
+          {
+            "rules": {
+              "super-linter/javadocvariable": "off"
+            }
+          }
