@@ -12,5 +12,4 @@ class ResourcesApplicationTests extends AbstractIntegrationTest{
 	@Test
 	void contextLoads() {
 	}
-
 }
