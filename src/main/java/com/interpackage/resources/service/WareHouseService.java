@@ -63,4 +63,23 @@ public class WareHouseService implements WareHouseInterface{
         }
     }
 
+    /**
+     * @param warehouse
+     * @return
+     */
+    @Override
+    public ResponseEntity<Response> delete(Long pk) {
+        try{
+            if(pk == null){
+                return ResponseEntity.badRequest().body(new Response("Debe ingresar un id"));
+            }
+            var warehouse = wareHouseRepository.findById(pk).get();
+            warehouse.setDeleted(true);
+            var newWareHouse = this.wareHouseRepository.save(warehouse);
+            return new ResponseEntity<>(new Response(newWareHouse), HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(new Response("Error al eliminar bodega "+e.getMessage()));
+        }
+    }
+
 }

@@ -43,4 +43,7 @@ public class Warehouse {
     @NotEmpty
     private String addressLine;
 
+    @Column(name="is_deleted",columnDefinition = "boolean DEFAULT 'false'")
+    private boolean deleted;
+
 }
