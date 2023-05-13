@@ -21,9 +21,6 @@ public class WareHouseService implements WareHouseInterface{
     @Autowired
     private WareHouseRepository wareHouseRepository;
 
-    @Autowired
-    private CityRepository cityRepository;
-    
     /**
      * This Java function creates a new warehouse and checks if a 
      * warehouse with the same name already
@@ -37,18 +34,33 @@ public class WareHouseService implements WareHouseInterface{
     @Override
     public ResponseEntity<Response> create(Warehouse warehouse) {
         try {
-            if (this.wareHouseRepository.existsWarehouseByName(warehouse.getName())){
-                return ResponseEntity
-                        .badRequest()
-                        .body(new Response("Ya existe una bodega con el nombre: " + warehouse.getName()));
-            } else {
-                return new ResponseEntity<>(new Response(this.wareHouseRepository.save(warehouse)), HttpStatus.CREATED);
-            } 
+            return new ResponseEntity<>(new Response(this.wareHouseRepository.save(warehouse)), HttpStatus.CREATED);
         } catch (DataIntegrityViolationException exception) {
             return ResponseEntity
                     .badRequest()
                     .body(new Response("Todos los campos son requeridos."));
         }
     }
+
     
+    /**
+     * This Java function updates a warehouse and returns a response
+     * entity with a success or error
+     * message.
+     * @param warehouse
+     * @return return a response entity with a success or error message
+     */
+    @Override
+    public ResponseEntity<Response> update(Warehouse warehouse) {
+        try{
+            if(warehouse.getWarehouseId() == null){
+                return ResponseEntity.badRequest().body(new Response("Debe ingresar un id"));
+            }
+            var newWareHouse = this.wareHouseRepository.save(warehouse);
+            return new ResponseEntity<>(new Response(newWareHouse), HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(new Response("Error al actualizar bodega "+e.getMessage()));
+        }
+    }
+
 }

@@ -8,4 +8,7 @@ import com.interpackage.resources.model.Warehouse;
 public interface WareHouseInterface {
     
     ResponseEntity<Response> create(Warehouse warehouse);
+
+    ResponseEntity<Response> update(Warehouse warehouse);
+
 }
