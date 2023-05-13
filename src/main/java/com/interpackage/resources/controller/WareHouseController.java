@@ -3,11 +3,7 @@ package com.interpackage.resources.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Warehouse;
@@ -53,5 +49,10 @@ public class WareHouseController {
     @PutMapping("/")
     public ResponseEntity<Response> updateWarehouse(@Valid @RequestBody Warehouse Warehouse){
         return wareHouseService.update(Warehouse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response> DeleteWarehouse(@PathVariable Long id){
+        return wareHouseService.delete(id);
     }
 }
