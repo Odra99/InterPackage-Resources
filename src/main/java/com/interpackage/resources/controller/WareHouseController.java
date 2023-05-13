@@ -1,8 +1,10 @@
 package com.interpackage.resources.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +31,7 @@ public class WareHouseController {
      * object that contains a Response object.
      */
     @PostMapping("/")
-    public ResponseEntity<Response> createWareHouse(final @RequestBody Warehouse warehouse) {
+    public ResponseEntity<Response> createWareHouse(@Valid @RequestBody Warehouse warehouse) {
         try {
             return wareHouseService.create(warehouse);
         } catch (final Exception e) {
@@ -37,5 +39,19 @@ public class WareHouseController {
                     .internalServerError()
                     .build();
         }
+    }
+
+    /**
+     * This is a Java function that updates a warehouse using a PUT 
+     * request and returns a response entity.
+     * @param Warehouse 
+     * warehouse entity that needs to be updated in the database. 
+     * The @Valid annotation is used to
+     * validate the request body against any constraints
+     * @return A ResponseEntity.
+     */
+    @PutMapping("/")
+    public ResponseEntity<Response> updateWarehouse(@Valid @RequestBody Warehouse Warehouse){
+        return wareHouseService.update(Warehouse);
     }
 }
