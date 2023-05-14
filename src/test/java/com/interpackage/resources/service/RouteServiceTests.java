@@ -35,11 +35,11 @@ class RouteServiceTests extends AbstractIntegrationTest {
     @BeforeEach
     void setUp() {
         this.routeRepository.deleteAll();
-        this.route = new Route(1L, "Ruta-Test",  BigDecimal.TEN, 1L, 2L);
+        this.route = new Route(1L, "Ruta-Test",  BigDecimal.TEN, 1L, 2L, false);
     }
 
     @Test
-    void createRouteSuccess() {
+    void testCreateRouteSuccess() {
         ResponseEntity<Response> responseEntity = routeService.create(route);
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertTrue(((Route) Objects.requireNonNull(responseEntity.getBody())
@@ -48,7 +48,7 @@ class RouteServiceTests extends AbstractIntegrationTest {
     }
 
     @Test
-    void createRouteAlreadyExists() {
+    void testCreateRouteAlreadyExists() {
         routeRepository.save(route);
         ResponseEntity<Response> responseEntity = routeService.create(route);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -57,7 +57,7 @@ class RouteServiceTests extends AbstractIntegrationTest {
     }
 
     @Test
-    void createRouteMissingFields() {
+    void testCreateRouteMissingFields() {
         ResponseEntity<Response> responseEntity = routeService.create(new Route());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertTrue(Objects.requireNonNull(responseEntity.getBody())
@@ -65,26 +65,31 @@ class RouteServiceTests extends AbstractIntegrationTest {
     }
 
     @Test
-    void editRouteSuccess() throws URISyntaxException {
-        Route routeUpdate = new Route(1L, "Ruta1", BigDecimal.ONE, 1L, 2L);
-        routeRepository.save(route);
-
+    void testEditRouteSuccess() throws URISyntaxException {
+        Route routeUpdate = new Route(1L, "Ruta2", BigDecimal.ONE, 1L, 2L, false);
+        routeUpdate = routeRepository.save(routeUpdate);
+        routeUpdate.setName("Ruta2");
+        routeUpdate.setPriceWeight(BigDecimal.TEN);
+        routeUpdate.setOrigin(2L);
+        routeUpdate.setDestination(3L);
         ResponseEntity<Response> response = routeService.edit(routeUpdate);
 
         // Comprueba que la respuesta sea un 200 OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         // Comprueba que se hayan actualizado los datos correctamente
-        Route updatedRoute = (Route) Objects.requireNonNull(routeService.getById(1L).getBody()).getResponseObject();
-        assertThat(updatedRoute.getName()).isEqualTo("Ruta1");
-        assertThat(updatedRoute.getPriceWeight()).isEqualTo(new BigDecimal("1.000000"));
-        assertThat(updatedRoute.getOrigin()).isEqualTo(1L);
-        assertThat(updatedRoute.getDestination()).isEqualTo(2L);
+        Route updatedRoute = (Route) Objects.requireNonNull(
+                routeService.getById(
+                        routeUpdate.getRouteId()).getBody()).getResponseObject();
+        assertThat(updatedRoute.getName()).isEqualTo("Ruta2");
+        assertThat(updatedRoute.getPriceWeight()).isEqualTo(new BigDecimal("10.000000"));
+        assertThat(updatedRoute.getOrigin()).isEqualTo(2L);
+        assertThat(updatedRoute.getDestination()).isEqualTo(3L);
     }
 
     @Test
-    void editRouteAlreadyExists() {
-        Route existingRoute = new Route(1L, "Existing Route", BigDecimal.ONE, 1L, 2L);
+    void testEditRouteAlreadyExists() {
+        Route existingRoute = new Route(1L, "Existing Route", BigDecimal.ONE, 1L, 2L, false);
         routeRepository.save(existingRoute);
         Route routeToUpdate = new Route();
         routeToUpdate.setRouteId(20L);
@@ -102,8 +107,8 @@ class RouteServiceTests extends AbstractIntegrationTest {
     }
 
     @Test
-    void editRouteDoesNotExist() {
-        Route routeDoesNotExist = new Route(100L, "Existing Route", BigDecimal.ONE, 1L, 2L);
+    void testEditRouteDoesNotExist() {
+        Route routeDoesNotExist = new Route(100L, "Existing Route", BigDecimal.ONE, 1L, 2L, false);
         // Act
         ResponseEntity<Response> response = routeService.edit(routeDoesNotExist);
         // Assert
@@ -111,11 +116,11 @@ class RouteServiceTests extends AbstractIntegrationTest {
     }
 
     @Test
-    void editRouteMissingFields() {
-        Route existingRoute = new Route(1L, "Existing", BigDecimal.ONE, 1L, 2L);
-        routeRepository.save(existingRoute);
+    void testEditRouteMissingFields() {
+        Route existingRoute = new Route(1L, "Existing", BigDecimal.ONE, 1L, 2L, false);
+        existingRoute = routeRepository.save(existingRoute);
         Route routeMissingFields = new Route();
-        routeMissingFields.setRouteId(3L);
+        routeMissingFields.setRouteId(existingRoute.getRouteId());
         routeMissingFields.setName("Test");
         ResponseEntity<Response> responseEntity = routeService.edit(routeMissingFields);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -124,10 +129,10 @@ class RouteServiceTests extends AbstractIntegrationTest {
     }
 
     @Test
-    void getAllRoutes() {
-        routeRepository.save(new Route(1L, "Existing1", BigDecimal.ONE, 1L, 2L));
-        routeRepository.save(new Route(2L, "Existing2", BigDecimal.ONE, 1L, 2L));
-        routeRepository.save(new Route(3L, "Existing3", BigDecimal.ONE, 1L, 2L));
+    void testGetAllRoutes() {
+        routeRepository.save(new Route(1L, "Existing1", BigDecimal.ONE, 1L, 2L, false));
+        routeRepository.save(new Route(2L, "Existing2", BigDecimal.ONE, 1L, 2L, false));
+        routeRepository.save(new Route(3L, "Existing3", BigDecimal.ONE, 1L, 2L, false));
 
         // Act
         ResponseEntity<Response> response = routeService.getAll();
@@ -141,11 +146,49 @@ class RouteServiceTests extends AbstractIntegrationTest {
     }
 
     @Test
-    void getRouteMissingFields(){
-        routeRepository.save(new Route(1L, "Existing", BigDecimal.ONE, 1L, 2L));
+    void testGetRouteMissingFields() {
+        routeRepository.save(new Route(1L, "Existing", BigDecimal.ONE, 1L, 2L, false));
         ResponseEntity<Response> responseEntity = routeService.getById(null);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertTrue(Objects.requireNonNull(responseEntity.getBody())
                 .getMessage().contains(Constants.REQUIRED_FIELDS));
+    }
+
+    @Test
+    void testGetById() {
+        Route testRoute = routeRepository.save(
+                new Route(1L, "Existing-Test", BigDecimal.ONE, 1L, 2L, false));
+
+        ResponseEntity<Response> response = routeService.getById(testRoute.getRouteId());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(testRoute.getRouteId(), ((Route) response.getBody().getResponseObject()).getRouteId());
+    }
+
+    @Test
+    void testDeleteSuccess() {
+        Route testRoute = routeRepository.save(
+                new Route(1L, "Existing-Test", BigDecimal.ONE, 1L, 2L, false));
+
+        ResponseEntity<Response> response = routeService.delete(testRoute.getRouteId());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(((Route) Objects.requireNonNull(response.getBody()).getResponseObject()).isDeleted());
+        assertTrue(routeRepository.findById(testRoute.getRouteId()).get().isDeleted());
+    }
+
+    @Test
+    void testDeleteMissingField() {
+        routeRepository.save(new Route(1L, "Existing-Test1", BigDecimal.ONE, 1L, 2L, false));
+        ResponseEntity<Response> responseEntity = routeService.delete(null);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertTrue(Objects.requireNonNull(responseEntity.getBody())
+                .getMessage().contains(Constants.REQUIRED_FIELDS));
+    }
+
+    @Test
+    void testDeleteNotFound() {
+        ResponseEntity<Response> response = routeService.delete(Long.MAX_VALUE);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

@@ -10,4 +10,5 @@ public interface RouteInterface {
     ResponseEntity<Response> edit(Route route);
     ResponseEntity<Response> getById(Long id);
     ResponseEntity<Response> getAll();
+    ResponseEntity<Response> delete(Long id);
 }

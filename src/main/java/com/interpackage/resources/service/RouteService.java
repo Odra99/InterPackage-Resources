@@ -27,12 +27,17 @@ public class RouteService implements RouteInterface {
      * Crea una nueva ruta.
      *
      * @param route El objeto de tipo Route que contiene la información de la nueva ruta.
-     * @return Un objeto ResponseEntity<Response> que contiene la respuesta HTTP. Si la ruta se crea correctamente,
-     *         la respuesta contendrá el código de estado HTTP 201 (CREATED) y un objeto Response que contiene
-     *         la información de la ruta creada. Si la ruta ya existe, la respuesta contendrá el código de estado HTTP 400
-     *         (BAD REQUEST) y un objeto Response que contiene un mensaje de error. Si algún campo requerido falta o es nulo,
-     *         la respuesta contendrá el código de estado HTTP 400 (BAD REQUEST) y un objeto Response que contiene
-     *         un mensaje de error.
+     * @return Un objeto ResponseEntity<Response> que contiene la
+     * respuesta HTTP. Si la ruta se crea correctamente,
+     * la respuesta contendrá el código de estado HTTP 201 (CREATED)
+     * y un objeto Response que contiene
+     * la información de la ruta creada. Si la ruta ya existe,
+     * la respuesta contendrá el código de estado HTTP 400
+     * (BAD REQUEST) y un objeto Response que contiene un mensaje de error.
+     * Si algún campo requerido falta o es nulo,
+     * la  respuesta contendrá el código de estado HTTP 400 (BAD REQUEST)
+     * y un objeto Response que contiene
+     * un mensaje de error.
      */
     public ResponseEntity<Response> create(Route route) {
         try {
@@ -62,7 +67,9 @@ public class RouteService implements RouteInterface {
      */
     public ResponseEntity<Response> edit(Route route) {
         try {
-            if (this.routeRepository.existsRouteByNameAndRouteIdIsNot(route.getName(), route.getRouteId())){
+            if (this.routeRepository
+                    .existsRouteByNameAndRouteIdIsNot(
+                            route.getName(), route.getRouteId())){
                 return ResponseEntity
                         .badRequest()
                         .body(new Response("Ya existe una ruta con el nombre: " + route.getName()));
@@ -87,11 +94,14 @@ public class RouteService implements RouteInterface {
     }
 
     /**
-     * Busca una ruta por su ID y devuelve una respuesta HTTP que contiene la ruta si se encuentra,
-     * o un error 404 si no se encuentra. Maneja la excepción DataIntegrityViolationException si se produce
+     * Busca una ruta por su ID y devuelve una respuesta HTTP
+     * que contiene la ruta si se encuentra,
+     * o un error 404 si no se encuentra. Maneja la excepción
+     * DataIntegrityViolationException si se produce
      * un error de integridad de datos.
      * @param id el ID de la ruta a buscar.
-     * @return una respuesta HTTP que contiene la ruta si se encuentra, o un error 404 si no se encuentra.
+     * @return una respuesta HTTP que contiene la ruta
+     * si se encuentra, o un error 404 si no se encuentra.
      */
     public ResponseEntity<Response> getById(Long id) {
         try {
@@ -112,6 +122,31 @@ public class RouteService implements RouteInterface {
      * @return ResponseEntity con la lista de rutas y el HttpStatus correspondiente.
      */
     public ResponseEntity<Response> getAll() {
-        return new ResponseEntity<>(new Response(routeRepository.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new Response(routeRepository.findAll()), HttpStatus.OK);
+    }
+
+
+    /**
+     * Deletes a route by id.
+     * @param id the id of the route to delete
+     * @return a response entity indicating the result of the operation
+     */
+    public ResponseEntity<Response> delete(Long id) {
+        try{
+            Optional<Route> optionalRoute = routeRepository.findById(id);
+            if (optionalRoute.isPresent()) {
+                Route route = optionalRoute.get();
+                route.setDeleted(Boolean.TRUE);
+                return new ResponseEntity<>(
+                        new Response(
+                                this.routeRepository.save(route)), HttpStatus.OK);
+            }
+            return ResponseEntity.notFound().build();
+        } catch(Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new Response(Constants.REQUIRED_FIELDS));
+        }
     }
 }

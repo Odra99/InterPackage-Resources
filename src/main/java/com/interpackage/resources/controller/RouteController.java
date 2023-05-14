@@ -97,4 +97,24 @@ public class RouteController {
     public ResponseEntity<Response> getRoutes() {
         return routeService.getAll();
     }
+
+    /**
+     * Delete a Route entity by its ID.
+     * @param id the ID of the Route entity to delete
+     * @return a ResponseEntity with a Response entity and HttpStatus.
+     * OK if the entity was successfully deleted, or a ResponseEntity
+     * with nobody and HttpStatus.NOT_FOUND if the entity was not found,
+     * or a ResponseEntity with nobody and HttpStatus.
+     * INTERNAL_SERVER_ERROR if an error occurred while deleting the entity
+     */
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Response> deleteRoute(final @PathVariable Long id){
+        try {
+            return routeService.delete(id);
+        } catch (final Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .build();
+        }
+    }
 }
