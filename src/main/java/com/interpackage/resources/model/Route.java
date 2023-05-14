@@ -35,4 +35,7 @@ public class Route {
 
     @Column (name = "destination", nullable = false)
     private Long destination;
+
+    @Column(name="is_deleted",columnDefinition = "boolean DEFAULT 'false'")
+    private boolean deleted;
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
     boolean existsRouteByName(String name);
+    boolean existsRouteByNameAndRouteIdIsNot(String name, Long id);
 }
