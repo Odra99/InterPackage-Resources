@@ -82,4 +82,41 @@ public class WareHouseService implements WareHouseInterface{
         }
     }
 
+
+    /**
+     * This Java function returns a ResponseEntity object containing a Response object with data
+     * retrieved from a warehouse repository based on a given primary key, or an error message if an
+     * exception occurs.
+     * 
+     * @param pk pk is a variable of type Long that represents the primary key of a record in a
+     * database table.
+     * @return A ResponseEntity object is being returned. It contains a Response object and an HTTP
+     * status code.
+     */
+    @Override
+    public ResponseEntity<Response> findById(Long pk) {
+        try{
+            return new ResponseEntity<>(new Response(wareHouseRepository.findById(pk)), HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(new Response("Error al operar petición"+e.getMessage()));
+        }
+    }
+
+
+    /**
+     * This Java function returns all items in a warehouse repository as a response entity, with error
+     * handling.
+     * 
+     * @return This method returns a ResponseEntity object that contains a Response object with a list
+     * of all the items in the warehouse. if a error is encountered return a internal server error status
+     */
+    @Override
+    public ResponseEntity<Response> findAll() {
+        try{
+            return new ResponseEntity<>(new Response(wareHouseRepository.findAllByDeleted(false)), HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body(new Response("Error al operar petición"+e.getMessage()));
+        }
+    }
+
 }

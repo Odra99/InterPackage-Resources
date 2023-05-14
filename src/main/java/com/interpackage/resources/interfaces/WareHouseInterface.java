@@ -12,4 +12,8 @@ public interface WareHouseInterface {
     ResponseEntity<Response> update(Warehouse warehouse);
 
     ResponseEntity<Response> delete(Long pk);
+
+    ResponseEntity<Response> findById(Long pk);
+
+    ResponseEntity<Response> findAll();
 }
