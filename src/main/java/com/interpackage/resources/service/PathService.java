@@ -1,6 +1,5 @@
 package com.interpackage.resources.service;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +9,16 @@ import com.interpackage.resources.interfaces.PathInterface;
 import com.interpackage.resources.model.Path;
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.repository.PathRepository;
+import com.interpackage.resources.repository.RouteRepository;
 
 @Service
 public class PathService implements PathInterface {
 
     @Autowired
     PathRepository pathRepository;
+
+    @Autowired
+    RouteRepository routeRepository;
 
     /**
      * This Java function creates a new path and checks if a
@@ -44,8 +47,8 @@ public class PathService implements PathInterface {
     public ResponseEntity<Response> getById(Long id) {
         try {
             var path = this.pathRepository.findById(id).orElse(null);
-            if (path!=null) {
-               return new ResponseEntity<>(new Response(path), HttpStatus.OK);
+            if (path != null) {
+                return new ResponseEntity<>(new Response(path), HttpStatus.OK);
             }
             return new ResponseEntity<>(new Response(),
                     HttpStatus.NOT_FOUND);
@@ -53,6 +56,32 @@ public class PathService implements PathInterface {
             return new ResponseEntity<>(new Response(),
                     HttpStatus.NOT_FOUND);
         }
+    }
+
+    @Override
+    public ResponseEntity<Response> update(Path path) {
+        if (this.pathRepository.existsPathByNameAndPathIdIsNot(path.getName(),path.getPathId())) {
+            return new ResponseEntity<>(new Response("Ya existe path con el nombre " + path.getName()),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        var route = this.routeRepository.findById(path.getRoute().getRouteId()).orElse(null);
+
+        if (route == null) {
+            return new ResponseEntity<>(new Response("Ruta no encontrada"),
+                    HttpStatus.BAD_REQUEST);
+        }
+        var pathDB = this.pathRepository.findById(path.getPathId()).orElse(null);
+
+        if (pathDB == null) {
+            return new ResponseEntity<>(new Response("Path no encontrado"),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        pathDB.merge(path);
+
+        return new ResponseEntity<>(new Response(this.pathRepository.save(pathDB)), HttpStatus.OK);
+
     }
 
 }

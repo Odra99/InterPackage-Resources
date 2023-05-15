@@ -48,4 +48,11 @@ public class Path {
     private boolean deleted;
 
     
+    public void merge(Path path){
+        name = path.name;
+        route = path.route;
+        origin = path.origin;
+        destination = path.destination;
+        priority = path.priority;
+    }
 }

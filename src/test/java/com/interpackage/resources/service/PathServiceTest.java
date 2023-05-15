@@ -47,6 +47,7 @@ public class PathServiceTest  extends AbstractIntegrationTest {
         this.route.setDestination(Long.valueOf(0));
         this.route.setOrigin(Long.valueOf(0));
         this.route.setPriceWeight(new BigDecimal(0.0));
+        this.route.setRouteId(Long.valueOf(1));
         this.routeService.create(route);
         this.path.setPathId(null);
         this.path.setName("TEST-PATH");
@@ -87,6 +88,44 @@ public class PathServiceTest  extends AbstractIntegrationTest {
         ResponseEntity<Response> responseEntity = pathService.getById(Long.valueOf(1000));
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
 
+    }
+
+    @Test
+    @Order(5)
+    void testUpdate(){
+        path.setName("UPDATE-NAME");
+        path.setPathId(pathId);
+        ResponseEntity<Response> responseEntity = pathService.update(path);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        Path pathDb = (Path) pathService.getById(pathId).getBody().getResponseObject();
+        assertEquals("UPDATE-NAME", pathDb.getName());
+    }
+
+    @Test
+    @Order(6)
+    void testUpdateNotFound(){
+        path.setPathId(Long.valueOf(-1));
+        ResponseEntity<Response> responseEntity = pathService.update(path);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @Order(7)
+    void testUpdateRouteNotFound(){
+        route.setRouteId(Long.valueOf(-1));
+        ResponseEntity<Response> responseEntity = pathService.update(path);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Ruta no encontrada",responseEntity.getBody().getMessage());
+    }
+
+    @Test
+    @Order(8)
+    void testUpdateNameAlreadyExisted(){
+        path.setName("UPDATE-NAME");
+        path.setPathId(Long.valueOf(-1));
+        ResponseEntity<Response> responseEntity = pathService.update(path);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Ya existe path con el nombre " + path.getName(),responseEntity.getBody().getMessage());
     }
 
 

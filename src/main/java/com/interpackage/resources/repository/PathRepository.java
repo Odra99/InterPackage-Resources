@@ -9,6 +9,7 @@ import com.interpackage.resources.model.Path;
 public interface PathRepository extends JpaRepository<Path,Long>{
 
     boolean existsPathByName(String name);
+    boolean existsPathByNameAndPathIdIsNot(String name, Long id);
 
     
 }

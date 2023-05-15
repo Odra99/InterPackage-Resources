@@ -8,4 +8,5 @@ public interface PathInterface {
 
     ResponseEntity<Response> create(Path route);
     ResponseEntity<Response> getById(Long id);
+    ResponseEntity<Response> update(Path path);
 }
