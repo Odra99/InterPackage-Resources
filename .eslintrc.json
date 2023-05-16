@@ -1,0 +1,6 @@
+{    
+    "rules": {
+      "super-linter/javadocvariable": "off"
+    }
+}
+  

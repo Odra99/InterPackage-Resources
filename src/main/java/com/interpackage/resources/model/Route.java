@@ -8,9 +8,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table (name = "route")
 public class Route {
@@ -26,12 +30,12 @@ public class Route {
     @Column(name = "price_weight", precision = 20, scale = 6, nullable = false)
     private BigDecimal priceWeight;
 
-
     @Column (name = "origin", nullable = false)
     private Long origin;
 
     @Column (name = "destination", nullable = false)
     private Long destination;
 
-    
+    @Column(name="is_deleted",columnDefinition = "boolean DEFAULT 'false'")
+    private boolean deleted;
 }
