@@ -28,5 +28,31 @@ pipeline {
                 }
             }  
         }
+
+        
+
+        stage('Jar en Produccion') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Odra99/InterPackage-Resources.git']])
+                sh 'ssh root@164.90.232.216 "cd /home/Interpackage/InterPackage-Resources && git pull origin main && mvn clean install -DskipTests"'
+            }
+        }
+
+        stage('Detener en Produccion') {
+            steps {
+                sh 'ssh root@164.90.232.216 "docker stop docker-interpackage-service-resource-1"'
+                sh 'ssh root@164.90.232.216 "docker rm docker-interpackage-service-resource-1"'
+            }
+        }
+
+        stage ('Desplegar en Produccion'){
+            steps{
+                script{
+                    sh 'ssh root@164.90.232.216 "cd /home/Interpackage/InterPackage-Docker && docker-compose up -d --build interpackage-service-resource"'
+                }
+            }  
+        }
+
+        
     }
 }
