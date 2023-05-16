@@ -46,12 +46,18 @@ public class PathService implements PathInterface {
     @Override
     public ResponseEntity<Response> getById(Long id) {
         try {
-            var path = this.pathRepository.findById(id).orElse(null);
-            if (path != null) {
-                return new ResponseEntity<>(new Response(path), HttpStatus.OK);
+            var pathDB = this.pathRepository.findById(id).orElse(null);
+            if (pathDB == null) {
+                return new ResponseEntity<>(new Response(),
+                HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(new Response(),
-                    HttpStatus.NOT_FOUND);
+            if (pathDB.isDeleted()) {
+                return new ResponseEntity<>(new Response("Trayecto no encontrado"),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            return new ResponseEntity<>(new Response(pathDB), HttpStatus.OK);
+           
         } catch (Exception e) {
             return new ResponseEntity<>(new Response(),
                     HttpStatus.NOT_FOUND);
@@ -74,7 +80,12 @@ public class PathService implements PathInterface {
         var pathDB = this.pathRepository.findById(path.getPathId()).orElse(null);
 
         if (pathDB == null) {
-            return new ResponseEntity<>(new Response("Path no encontrado"),
+            return new ResponseEntity<>(new Response("Trayecto no encontrado"),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        if (pathDB.isDeleted()) {
+            return new ResponseEntity<>(new Response("Trayecto no encontrado"),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -83,5 +94,25 @@ public class PathService implements PathInterface {
         return new ResponseEntity<>(new Response(this.pathRepository.save(pathDB)), HttpStatus.OK);
 
     }
+
+    @Override
+    public ResponseEntity<Response> delete(Long id){
+        var pathDB = this.pathRepository.findById(id).orElse(null);
+
+        if (pathDB == null) {
+            return new ResponseEntity<>(new Response("Trayecto no encontrado"),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        if (pathDB.isDeleted()) {
+            return new ResponseEntity<>(new Response("Trayecto no encontrado"),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        pathDB.setDeleted(true);
+
+        return new ResponseEntity<>(new Response(this.pathRepository.save(pathDB)), HttpStatus.OK);        
+    }
+
 
 }

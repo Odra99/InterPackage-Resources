@@ -3,9 +3,11 @@ package com.interpackage.resources.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -46,6 +48,22 @@ public class PathController {
     @GetMapping("/{id:[0-9]+}")
     public ResponseEntity<Response> getPath(@PathVariable Long id) {
         return pathService.getById(id);
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<Response> updatePath(@Valid @RequestBody Path path) {
+        try {
+            return pathService.update(path);
+        } catch (final Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .build();
+        }
+    }
+
+    @DeleteMapping("/{id:[0-9]+}")
+    public ResponseEntity<Response> delete(@PathVariable Long id) {
+        return pathService.delete(id);
     }
 
 }

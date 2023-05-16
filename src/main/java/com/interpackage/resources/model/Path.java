@@ -47,6 +47,8 @@ public class Path {
     @Column(name="is_deleted",columnDefinition = "boolean DEFAULT 'false'")
     private boolean deleted;
 
+    @Column(name = "is_active",columnDefinition = "boolean DEFAULT 'true'")
+    private boolean active;
     
     public void merge(Path path){
         name = path.name;

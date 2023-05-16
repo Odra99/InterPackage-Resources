@@ -128,5 +128,20 @@ public class PathServiceTest  extends AbstractIntegrationTest {
         assertEquals("Ya existe path con el nombre " + path.getName(),responseEntity.getBody().getMessage());
     }
 
+    @Test
+    @Order(9)
+    void testDeletePath(){
+        ResponseEntity<Response> responseEntity = pathService.delete(pathId);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @Order(10)
+    void testNotExistedDeletePath(){
+        ResponseEntity<Response> responseEntity = pathService.delete(pathId);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("Trayecto no encontrado",responseEntity.getBody().getMessage());
+    }
+
 
 }
