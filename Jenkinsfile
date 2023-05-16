@@ -16,8 +16,8 @@ pipeline {
 
         stage('Detener El Servicio Docker') {
             steps {
-                sh 'ssh root@137.184.209.89 "docker stop docker-interpackage-service-resource-1"'
-                sh 'ssh root@137.184.209.89 "docker rm docker-interpackage-service-resource-1"'
+                sh 'ssh root@137.184.209.89 "docker stop interpackage-docker-interpackage-service-resource-1"'
+                sh 'ssh root@137.184.209.89 "docker rm interpackage-docker-interpackage-service-resource-1"'
             }
         }
 
@@ -40,8 +40,8 @@ pipeline {
 
         stage('Detener en Produccion') {
             steps {
-                sh 'ssh root@164.90.232.216 "docker stop docker-interpackage-service-resource-1"'
-                sh 'ssh root@164.90.232.216 "docker rm docker-interpackage-service-resource-1"'
+                sh 'ssh root@164.90.232.216 "docker stop interpackage-docker-interpackage-service-resource-1"'
+                sh 'ssh root@164.90.232.216 "docker rm interpackage-docker-interpackage-service-resource-1"'
             }
         }
 
