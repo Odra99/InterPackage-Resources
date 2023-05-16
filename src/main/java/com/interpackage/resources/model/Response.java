@@ -18,5 +18,6 @@ public class Response {
 
     public Response(Object responseObject) {
         this.responseObject = responseObject;
+        this.message = "";
     }
 }

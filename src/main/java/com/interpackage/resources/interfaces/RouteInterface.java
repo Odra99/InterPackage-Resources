@@ -7,4 +7,8 @@ import org.springframework.http.ResponseEntity;
 public interface RouteInterface {
 
     ResponseEntity<Response> create(Route route);
+    ResponseEntity<Response> edit(Route route);
+    ResponseEntity<Response> getById(Long id);
+    ResponseEntity<Response> getAll();
+    ResponseEntity<Response> delete(Long id);
 }

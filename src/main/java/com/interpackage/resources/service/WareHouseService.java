@@ -1,5 +1,6 @@
 package com.interpackage.resources.service;
 
+import com.interpackage.resources.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -35,10 +36,14 @@ public class WareHouseService implements WareHouseInterface{
     public ResponseEntity<Response> create(Warehouse warehouse) {
         try {
             return new ResponseEntity<>(new Response(this.wareHouseRepository.save(warehouse)), HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException exception) {
+        }catch(jakarta.validation.ConstraintViolationException ignored){
             return ResponseEntity
                     .badRequest()
-                    .body(new Response("Todos los campos son requeridos."));
+                    .body(new Response(Constants.REQUIRED_FIELDS));
+        }catch (Exception exception) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(new Response(Constants.INTERNAL_SERVER_ERROR_DB));
         }
     }
 
@@ -54,12 +59,12 @@ public class WareHouseService implements WareHouseInterface{
     public ResponseEntity<Response> update(Warehouse warehouse) {
         try{
             if(warehouse.getWarehouseId() == null){
-                return ResponseEntity.badRequest().body(new Response("Debe ingresar un id"));
+                return ResponseEntity.badRequest().body(new Response(Constants.REQUIRED_ID));
             }
             var newWareHouse = this.wareHouseRepository.save(warehouse);
             return new ResponseEntity<>(new Response(newWareHouse), HttpStatus.OK);
         }catch(Exception e){
-            return ResponseEntity.badRequest().body(new Response("Error al actualizar bodega "+e.getMessage()));
+            return ResponseEntity.internalServerError().body(new Response(Constants.INTERNAL_SERVER_ERROR_DB));
         }
     }
 
@@ -71,14 +76,18 @@ public class WareHouseService implements WareHouseInterface{
     public ResponseEntity<Response> delete(Long pk) {
         try{
             if(pk == null){
-                return ResponseEntity.badRequest().body(new Response("Debe ingresar un id"));
+                return ResponseEntity.badRequest().body(new Response(Constants.REQUIRED_ID));
             }
-            var warehouse = wareHouseRepository.findById(pk).get();
+            var warehouse_optional = wareHouseRepository.findById(pk);
+            if (warehouse_optional.isEmpty()){
+                return new ResponseEntity<>(new Response(), HttpStatus.NOT_FOUND);
+            }
+            var warehouse = warehouse_optional.get();
             warehouse.setDeleted(true);
             var newWareHouse = this.wareHouseRepository.save(warehouse);
             return new ResponseEntity<>(new Response(newWareHouse), HttpStatus.OK);
         }catch(Exception e){
-            return ResponseEntity.badRequest().body(new Response("Error al eliminar bodega "+e.getMessage()));
+            return ResponseEntity.internalServerError().body(new Response(Constants.INTERNAL_SERVER_ERROR_DB));
         }
     }
 
@@ -96,9 +105,9 @@ public class WareHouseService implements WareHouseInterface{
     @Override
     public ResponseEntity<Response> findById(Long pk) {
         try{
-            return new ResponseEntity<>(new Response(wareHouseRepository.findById(pk)), HttpStatus.OK);
+            return new ResponseEntity<>(new Response(wareHouseRepository.findById(pk).orElseGet(null)), HttpStatus.OK);
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(new Response("Error al operar petición"+e.getMessage()));
+            return ResponseEntity.internalServerError().body(new Response(Constants.INTERNAL_SERVER_ERROR_DB));
         }
     }
 
