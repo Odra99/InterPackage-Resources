@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.interpackage.resources.AbstractIntegrationTest;
+import com.interpackage.resources.PostgreSQLExtension;
 import com.interpackage.resources.model.Path;
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Route;
@@ -26,8 +28,9 @@ import com.interpackage.resources.model.Route;
 @Testcontainers
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
+@ExtendWith(PostgreSQLExtension.class)
 @DirtiesContext
-public class PathServiceTest extends AbstractIntegrationTest {
+public class PathServiceTest {
 
     @Autowired
     private PathService pathService;
