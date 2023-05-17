@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
@@ -22,6 +23,7 @@ import java.util.Objects;
 
 @Testcontainers
 @SpringBootTest
+@DirtiesContext
 class RouteServiceTests extends AbstractIntegrationTest {
 
     @Autowired

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.interpackage.resources.AbstractIntegrationTest;
@@ -25,14 +26,14 @@ import com.interpackage.resources.model.Route;
 @Testcontainers
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
-public class PathServiceTest  extends AbstractIntegrationTest {
+@DirtiesContext
+public class PathServiceTest extends AbstractIntegrationTest {
 
     @Autowired
     private PathService pathService;
 
     @Autowired
     private RouteService routeService;
-
 
     private Path path = new Path();
 
@@ -42,7 +43,7 @@ public class PathServiceTest  extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        route = new Route();    
+        route = new Route();
         this.route.setName("TEST-ROUTE");
         this.route.setDestination(Long.valueOf(0));
         this.route.setOrigin(Long.valueOf(0));
@@ -69,14 +70,14 @@ public class PathServiceTest  extends AbstractIntegrationTest {
 
     @Test
     @Order(2)
-    void testCreateWithNameAlreadyRegistered(){
+    void testCreateWithNameAlreadyRegistered() {
         ResponseEntity<Response> responseEntity = pathService.create(path);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     @Order(3)
-    void testGetPath(){
+    void testGetPath() {
         ResponseEntity<Response> responseEntity = pathService.getById(pathId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
@@ -84,7 +85,7 @@ public class PathServiceTest  extends AbstractIntegrationTest {
 
     @Test
     @Order(4)
-    void testGetPathNotExists(){
+    void testGetPathNotExists() {
         ResponseEntity<Response> responseEntity = pathService.getById(Long.valueOf(1000));
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
 
@@ -92,7 +93,7 @@ public class PathServiceTest  extends AbstractIntegrationTest {
 
     @Test
     @Order(5)
-    void testUpdate(){
+    void testUpdate() {
         path.setName("UPDATE-NAME");
         path.setPathId(pathId);
         ResponseEntity<Response> responseEntity = pathService.update(path);
@@ -103,7 +104,7 @@ public class PathServiceTest  extends AbstractIntegrationTest {
 
     @Test
     @Order(6)
-    void testUpdateNotFound(){
+    void testUpdateNotFound() {
         path.setPathId(Long.valueOf(-1));
         ResponseEntity<Response> responseEntity = pathService.update(path);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
@@ -111,49 +112,49 @@ public class PathServiceTest  extends AbstractIntegrationTest {
 
     @Test
     @Order(7)
-    void testUpdateRouteNotFound(){
+    void testUpdateRouteNotFound() {
         route.setRouteId(Long.valueOf(-1));
         ResponseEntity<Response> responseEntity = pathService.update(path);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Ruta no encontrada",responseEntity.getBody().getMessage());
+        assertEquals("Ruta no encontrada", responseEntity.getBody().getMessage());
     }
 
     @Test
     @Order(8)
-    void testUpdateNameAlreadyExisted(){
+    void testUpdateNameAlreadyExisted() {
         path.setName("UPDATE-NAME");
         path.setPathId(Long.valueOf(-1));
         ResponseEntity<Response> responseEntity = pathService.update(path);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Ya existe path con el nombre " + path.getName(),responseEntity.getBody().getMessage());
+        assertEquals("Ya existe path con el nombre " + path.getName(), responseEntity.getBody().getMessage());
     }
-
 
     @Test
     @Order(9)
-    void testChangeStatus(){
+    void testChangeStatus() {
         ResponseEntity<Response> responseEntity = pathService.changeStatus(pathId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         var pathDB = (Path) responseEntity.getBody().getResponseObject();
-        assertEquals(false,pathDB.isActive());
+        assertEquals(false, pathDB.isActive());
+        responseEntity = pathService.changeStatus(pathId);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        pathDB = (Path) responseEntity.getBody().getResponseObject();
+        assertEquals(true, pathDB.isActive());
     }
 
     @Test
     @Order(10)
-    void testDeletePath(){
+    void testDeletePath() {
         ResponseEntity<Response> responseEntity = pathService.delete(pathId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @Test
     @Order(11)
-    void testNotExistedDeletePath(){
+    void testNotExistedDeletePath() {
         ResponseEntity<Response> responseEntity = pathService.delete(pathId);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        assertEquals("Trayecto no encontrado",responseEntity.getBody().getMessage());
+        assertEquals("Trayecto no encontrado", responseEntity.getBody().getMessage());
     }
-
-
-
 
 }

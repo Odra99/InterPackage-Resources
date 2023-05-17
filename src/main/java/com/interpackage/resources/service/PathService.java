@@ -109,7 +109,8 @@ public class PathService implements PathInterface {
                     HttpStatus.NOT_FOUND);
         }
 
-        pathDB.setActive(!pathDB.isActive());
+        var status = !pathDB.isActive();
+        pathDB.setActive(status);
         System.out.println(pathDB.isActive());
 
         return new ResponseEntity<>(new Response(this.pathRepository.save(pathDB)), HttpStatus.OK);
