@@ -49,7 +49,7 @@ public class PathService implements PathInterface {
             var pathDB = this.pathRepository.findById(id).orElse(null);
             if (pathDB == null) {
                 return new ResponseEntity<>(new Response(),
-                HttpStatus.NOT_FOUND);
+                        HttpStatus.NOT_FOUND);
             }
             if (pathDB.isDeleted()) {
                 return new ResponseEntity<>(new Response("Trayecto no encontrado"),
@@ -57,7 +57,7 @@ public class PathService implements PathInterface {
             }
 
             return new ResponseEntity<>(new Response(pathDB), HttpStatus.OK);
-           
+
         } catch (Exception e) {
             return new ResponseEntity<>(new Response(),
                     HttpStatus.NOT_FOUND);
@@ -66,7 +66,7 @@ public class PathService implements PathInterface {
 
     @Override
     public ResponseEntity<Response> update(Path path) {
-        if (this.pathRepository.existsPathByNameAndPathIdIsNot(path.getName(),path.getPathId())) {
+        if (this.pathRepository.existsPathByNameAndPathIdIsNot(path.getName(), path.getPathId())) {
             return new ResponseEntity<>(new Response("Ya existe path con el nombre " + path.getName()),
                     HttpStatus.BAD_REQUEST);
         }
@@ -96,7 +96,27 @@ public class PathService implements PathInterface {
     }
 
     @Override
-    public ResponseEntity<Response> delete(Long id){
+    public ResponseEntity<Response> changeStatus(Long id) {
+        var pathDB = this.pathRepository.findById(id).orElse(null);
+
+        if (pathDB == null) {
+            return new ResponseEntity<>(new Response("Trayecto no encontrado"),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        if (pathDB.isDeleted()) {
+            return new ResponseEntity<>(new Response("Trayecto no encontrado"),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        pathDB.setActive(!pathDB.isActive());
+        System.out.println(pathDB.isActive());
+
+        return new ResponseEntity<>(new Response(this.pathRepository.save(pathDB)), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Response> delete(Long id) {
         var pathDB = this.pathRepository.findById(id).orElse(null);
 
         if (pathDB == null) {
@@ -111,8 +131,7 @@ public class PathService implements PathInterface {
 
         pathDB.setDeleted(true);
 
-        return new ResponseEntity<>(new Response(this.pathRepository.save(pathDB)), HttpStatus.OK);        
+        return new ResponseEntity<>(new Response(this.pathRepository.save(pathDB)), HttpStatus.OK);
     }
-
 
 }

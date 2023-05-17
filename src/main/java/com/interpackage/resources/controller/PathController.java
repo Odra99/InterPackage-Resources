@@ -66,4 +66,14 @@ public class PathController {
         return pathService.delete(id);
     }
 
+    @PutMapping("/{id:[0-9]+}")
+    public ResponseEntity<Response> setStatus(@PathVariable Long id) {
+        try {
+            return pathService.changeStatus(id);
+        } catch (final Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .build();
+        }
+    }
 }

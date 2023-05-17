@@ -10,4 +10,5 @@ public interface PathInterface {
     ResponseEntity<Response> getById(Long id);
     ResponseEntity<Response> update(Path path);
     ResponseEntity<Response> delete(Long id);
+    ResponseEntity<Response> changeStatus(Long id);
 }
