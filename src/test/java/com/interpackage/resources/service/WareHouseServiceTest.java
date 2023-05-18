@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.interpackage.resources.AbstractIntegrationTest;
+import com.interpackage.resources.PostgreSQLExtension;
 import com.interpackage.resources.model.*;
 import com.interpackage.resources.repository.CityRepository;
 import com.interpackage.resources.repository.CountryRepository;
@@ -14,10 +15,12 @@ import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
@@ -27,7 +30,9 @@ import java.util.Objects;
 
 @Testcontainers
 @SpringBootTest
-class WareHouseServiceTest extends AbstractIntegrationTest {
+@ExtendWith(PostgreSQLExtension.class)
+@DirtiesContext
+class WareHouseServiceTest {
 
     @Autowired
     private WareHouseService wareHouseService;
@@ -148,12 +153,10 @@ class WareHouseServiceTest extends AbstractIntegrationTest {
     @Test
     void testdeleteWarehouseErrorDb() {
         this.wareHouseService.create(this.warehouse);
-        this.container.stop();;
         ResponseEntity<Response> responseEntity = wareHouseService.delete(this.warehouse.getWarehouseId());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertTrue(Objects.requireNonNull(responseEntity.getBody())
                 .getMessage().contains(Constants.INTERNAL_SERVER_ERROR_DB));
-        this.container.start();
     }
 
     @Test
@@ -168,7 +171,6 @@ class WareHouseServiceTest extends AbstractIntegrationTest {
     @Test
     void testfindWarehouseByError() {
         this.wareHouseService.create(this.warehouse);
-        this.container.stop();
         ResponseEntity<Response> responseEntity = wareHouseService.findById(this.warehouse.getWarehouseId());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
        
@@ -190,7 +192,6 @@ class WareHouseServiceTest extends AbstractIntegrationTest {
         List<Warehouse> results = new ArrayList<Warehouse>();
         results.add(this.warehouse);
         this.wareHouseService.create(this.warehouse);
-        this.container.stop();
         ResponseEntity<Response> responseEntity = wareHouseService.findAll();
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }

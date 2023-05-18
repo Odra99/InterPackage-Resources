@@ -4,16 +4,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.interpackage.resources.AbstractIntegrationTest;
+import com.interpackage.resources.PostgreSQLExtension;
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Route;
 import com.interpackage.resources.repository.RouteRepository;
 import com.interpackage.resources.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
@@ -22,7 +25,9 @@ import java.util.Objects;
 
 @Testcontainers
 @SpringBootTest
-class RouteServiceTests extends AbstractIntegrationTest {
+@ExtendWith(PostgreSQLExtension.class)
+@DirtiesContext
+class RouteServiceTests {
 
     @Autowired
     private RouteService routeService;

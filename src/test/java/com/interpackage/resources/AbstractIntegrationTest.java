@@ -9,18 +9,22 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @SpringBootTest
-public class AbstractIntegrationTest {
-
+public abstract class AbstractIntegrationTest {
 
 	@Container
-	public static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:12");
-	
+	public  static final PostgreSQLContainer<?> container;
+
 	@DynamicPropertySource
 	static void properties(DynamicPropertyRegistry registry) {
 		registry.add("spring.datasource.url", container::getJdbcUrl);
 		registry.add("spring.datasource.password", container::getPassword);
 		registry.add("spring.datasource.username", container::getUsername);
 	}
-    
-    
+
+	static {
+		container = new PostgreSQLContainer<>("postgres:12").withReuse(true);
+
+		container.start();
+	}
+
 }
