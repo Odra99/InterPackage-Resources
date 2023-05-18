@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.interpackage.basedomains.aspect.RequiredRole;
 
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Warehouse;
@@ -27,6 +28,7 @@ public class WareHouseController {
      * object that contains a Response object.
      */
     @PostMapping("/")
+    @RequiredRole({Constants.ADMIN_ROL})
     public ResponseEntity<Response> createWareHouse(@Valid @RequestBody Warehouse warehouse) {
         try {
             return wareHouseService.create(warehouse);
@@ -47,6 +49,7 @@ public class WareHouseController {
      * @return A ResponseEntity.
      */
     @PutMapping("/")
+    @RequiredRole({Constants.ADMIN_ROL})
     public ResponseEntity<Response> updateWarehouse(@Valid @RequestBody Warehouse Warehouse){
         return wareHouseService.update(Warehouse);
     }
@@ -61,6 +64,7 @@ public class WareHouseController {
      * @return A ResponseEntity object containing a Response object is being returned.
      */
     @DeleteMapping("/{id}")
+    @RequiredRole({Constants.ADMIN_ROL})
     public ResponseEntity<Response> DeleteWarehouse(@PathVariable Long id){
         return wareHouseService.delete(id);
     }
@@ -76,6 +80,7 @@ public class WareHouseController {
      * @return A ResponseEntity object containing a Response object is being returned.
      */
     @GetMapping("/{id}")
+    @RequiredRole({Constants.USER_ROL})
     public ResponseEntity<Response> GetById(@PathVariable Long id){
         return wareHouseService.findById(id);
     }
@@ -87,6 +92,7 @@ public class WareHouseController {
      * object. The `Response` object likely contains data related to all the items in the warehouse.
      */
     @GetMapping("/all")
+    @RequiredRole({Constants.USER_ROL})
     public ResponseEntity<Response> GetAll(){
         return wareHouseService.findAll();
     }
