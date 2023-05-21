@@ -24,12 +24,12 @@ public class AuthorizationAspect {
         String rolesHeader = request.getHeader("roles");
         Set<String> roles = new HashSet<>(Arrays.asList(rolesHeader.split(",")));
         Set<String> requiredRoles = new HashSet<>(Arrays.asList(requiredRole.value()));
-        System.out.println("Required roles: " + requiredRoles);
-        System.out.println("User roles: " + roles);
+        
+        
 
         // Verificar si al menos un rol coincide
         requiredRoles.retainAll(roles);
-        System.out.println("Required roles before: " + requiredRoles);
+        
 
         if (!requiredRoles.isEmpty()) {
             return joinPoint.proceed();
