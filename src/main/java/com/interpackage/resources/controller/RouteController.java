@@ -3,7 +3,7 @@
  */
 package com.interpackage.resources.controller;
 
-import com.interpackage.basedomains.aspect.RequiredRole;
+import com.interpackage.resources.aspect.RequiredRole;
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Route;
 import com.interpackage.resources.service.EventService;
