@@ -77,4 +77,9 @@ public class PathController {
                     .build();
         }
     }
+
+    @GetMapping("/")
+    public ResponseEntity<Response> getRoutes() {
+        return pathService.getAll();
+    }
 }
