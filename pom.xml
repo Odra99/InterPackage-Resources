@@ -91,7 +91,11 @@
             <artifactId>base-domains</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-		
+		<!-- Dependencies for Apache Kafka -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

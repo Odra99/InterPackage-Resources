@@ -9,7 +9,8 @@ public final class Constants {
     public static final String REQUIRED_ID = "Debe ingresar un ID";
     public static final String ADMIN_ROL = "Admin";
     public static final String USER_ROL = "User";
-    
+    public static final String MESSAGE_NOTIFICATION = "Notification";
+    public static final String PENDING_STATE = "Pending";
     private Constants() {
     }
 }
