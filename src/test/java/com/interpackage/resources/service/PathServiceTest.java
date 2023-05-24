@@ -19,14 +19,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.interpackage.resources.AbstractIntegrationTest;
 import com.interpackage.resources.PostgreSQLExtension;
 import com.interpackage.resources.model.Path;
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Route;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = {
+    "eureka.client.enabled=false",
+    "jwt.secret=Z968CJlXkSXsKBBEYPdyuSTkbHFeGP+dAzDExoNq6Gw=",
+    "spring.kafka.topic.name=user_topics",
+    "spring.kafka.producer.bootstrap-servers=non-existent-server:9092"
+})
 @TestMethodOrder(OrderAnnotation.class)
 @ExtendWith(PostgreSQLExtension.class)
 @DirtiesContext
