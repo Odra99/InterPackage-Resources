@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.interpackage.resources.aspect.RequiredRole;
 
 import com.interpackage.resources.model.Path;
 import com.interpackage.resources.model.Response;
@@ -79,7 +78,7 @@ public class PathController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Response> getRoutes() {
+    public ResponseEntity<Response> getPaths() {
         return pathService.getAll();
     }
 }
