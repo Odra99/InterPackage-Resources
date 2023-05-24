@@ -65,6 +65,13 @@ public class PathService implements PathInterface {
     }
 
     @Override
+    public ResponseEntity<Response> getAll() {
+        return new ResponseEntity<>(
+                new Response(this.pathRepository.findAll()), HttpStatus.OK);
+    }
+
+
+    @Override
     public ResponseEntity<Response> update(Path path) {
         if (this.pathRepository.existsPathByNameAndPathIdIsNot(path.getName(), path.getPathId())) {
             return new ResponseEntity<>(new Response("Ya existe path con el nombre " + path.getName()),
