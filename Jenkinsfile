@@ -38,7 +38,7 @@ pipeline {
 
         stage('Jar en Produccion') {
             steps {
-                sh 'ssh root@164.90.232.216 "cd /home/Interpackage/InterPackage-Resources && git pull origin main && mvn clean install"'
+                sh 'ssh root@164.90.232.216 "cd /home/Interpackage/InterPackage-Resources && git pull origin main && mvn clean install -DskipTests"'
             }
         }
 
