@@ -24,8 +24,8 @@ public class Resource {
     private Long resourceId;
 
     @ManyToOne()
-    @JoinColumn(name = "route_id")
-    private Route route;
+    @JoinColumn(name = "wharehouse_id")
+    private Warehouse warehouse;
 
     @ManyToOne()
     @JoinColumn(name = "path_id")

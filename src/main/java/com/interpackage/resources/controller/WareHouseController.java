@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.interpackage.basedomains.aspect.RequiredRole;
+import com.interpackage.resources.aspect.RequiredRole;
 
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Warehouse;
@@ -80,7 +80,7 @@ public class WareHouseController {
      * @return A ResponseEntity object containing a Response object is being returned.
      */
     @GetMapping("/{id}")
-    @RequiredRole({Constants.USER_ROL})
+    @RequiredRole({Constants.ADMIN_ROL})
     public ResponseEntity<Response> GetById(@PathVariable Long id){
         return wareHouseService.findById(id);
     }
@@ -92,7 +92,7 @@ public class WareHouseController {
      * object. The `Response` object likely contains data related to all the items in the warehouse.
      */
     @GetMapping("/all")
-    @RequiredRole({Constants.USER_ROL})
+    @RequiredRole({Constants.ADMIN_ROL})
     public ResponseEntity<Response> GetAll(){
         return wareHouseService.findAll();
     }

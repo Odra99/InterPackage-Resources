@@ -3,14 +3,17 @@
  */
 package com.interpackage.resources.controller;
 
-import com.interpackage.basedomains.aspect.RequiredRole;
+import com.interpackage.resources.aspect.RequiredRole;
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.model.Route;
+import com.interpackage.resources.service.EventService;
 import com.interpackage.resources.service.RouteService;
 import com.interpackage.resources.util.Constants;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * Controlador para manejar las rutas.
@@ -21,6 +24,7 @@ public class RouteController {
 
     // Servicio de rutas
     private final RouteService routeService;
+    private final EventService eventService;
 
     /**
      * Constructor de la clase RouteController que inicializa la dependencia RouteService
@@ -28,8 +32,11 @@ public class RouteController {
      *
      * @param routeService Servicio de rutas que se utilizará en este controlador.
      */
-    public RouteController(final RouteService routeService) {
+    public RouteController(
+            final RouteService routeService,
+            final EventService eventService) {
         this.routeService = routeService;
+        this.eventService = eventService;
     }
 
     /**
@@ -48,7 +55,12 @@ public class RouteController {
     @RequiredRole({Constants.ADMIN_ROL})
     public ResponseEntity<Response> addRoute(final @RequestBody Route route) {
         try {
-            return routeService.create(route);
+            ResponseEntity<Response> response = routeService.create(route);
+            eventService.sendNotification(
+                    (Route) Objects
+                            .requireNonNull(response.getBody())
+                            .getResponseObject());
+            return response;
         } catch (final Exception e) {
             return ResponseEntity
                     .internalServerError()
