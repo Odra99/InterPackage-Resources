@@ -7,7 +7,7 @@ pipeline {
     }
 
     stages {
-        stage('Test Y Creacion de JAR') {
+        stage('TEST Y JAR DEV') {
             steps {
                 checkout scmGit(branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Odra99/InterPackage-Resources.git']])
                 sh 'ssh root@137.184.209.89 "cd /home/Interpackage/InterPackage-Resources && git pull origin main && mvn clean install"'
@@ -31,14 +31,13 @@ pipeline {
 
         stage('Merge a main') {
             steps {
-                sh 'ssh root@164.90.232.216 "cd /home/Interpackage/InterPackage-Resources && git pull origin dev && git merge dev && git push origin main"'
+                sh 'ssh root@164.90.232.216 "cd /home/Interpackage/InterPackage-Resources && git checkout main && git merge origin/dev && git push origin main"'
             }
         }
         
 
         stage('Jar en Produccion') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Odra99/InterPackage-Resources.git']])
                 sh 'ssh root@164.90.232.216 "cd /home/Interpackage/InterPackage-Resources && git pull origin main && mvn clean install"'
             }
         }
