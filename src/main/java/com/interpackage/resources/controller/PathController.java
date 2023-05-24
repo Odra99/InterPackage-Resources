@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import com.interpackage.resources.aspect.RequiredRole;
 import com.interpackage.resources.model.Path;
 import com.interpackage.resources.model.Response;
 import com.interpackage.resources.service.PathService;
@@ -35,6 +35,7 @@ public class PathController {
      *         object that contains a Response object.
      */
     @PostMapping("/")
+    @RequiredRole({"Admin","Receptionist"})
     public ResponseEntity<Response> createPath(@Valid @RequestBody Path path) {
         try {
             return pathService.create(path);
@@ -46,11 +47,13 @@ public class PathController {
     }
 
     @GetMapping("/{id:[0-9]+}")
+    @RequiredRole({"Admin","Receptionist"})
     public ResponseEntity<Response> getPath(@PathVariable Long id) {
         return pathService.getById(id);
     }
 
     @PutMapping("/")
+    @RequiredRole({"Admin","Receptionist"})
     public ResponseEntity<Response> updatePath(@Valid @RequestBody Path path) {
         try {
             return pathService.update(path);
@@ -62,11 +65,13 @@ public class PathController {
     }
 
     @DeleteMapping("/{id:[0-9]+}")
+    @RequiredRole({"Admin","Receptionist"})
     public ResponseEntity<Response> delete(@PathVariable Long id) {
         return pathService.delete(id);
     }
 
     @PutMapping("/{id:[0-9]+}")
+    @RequiredRole({"Admin","Receptionist"})
     public ResponseEntity<Response> setStatus(@PathVariable Long id) {
         try {
             return pathService.changeStatus(id);
@@ -78,6 +83,7 @@ public class PathController {
     }
 
     @GetMapping("/")
+    @RequiredRole({"Admin","Receptionist"})
     public ResponseEntity<Response> getPaths() {
         return pathService.getAll();
     }
